@@ -35,7 +35,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit">
+      <widget class="QLineEdit" name="allCost">
        <property name="readOnly">
         <bool>true</bool>
        </property>
@@ -88,6 +88,10 @@
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>allCost</tabstop>
+  <tabstop>tableWidget</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

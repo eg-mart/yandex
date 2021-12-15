@@ -12,7 +12,6 @@ class Main(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('table.ui', self)
-        self.load_table()
         self.update1()
         self.tableWidget.itemChanged.connect(self.update1)
 

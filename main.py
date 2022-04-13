@@ -18,13 +18,18 @@ def login():
 def job_monitor():
     session = create_session()
     with session.begin():
-        jobs = session.query(Jobs).all()
-        job = session.query(Jobs).first()
+        job = Jobs()
+        job.job = 'Работа'
+        job.work_size = 20
+        job.collaborators = '4, 5'
+        job.is_finished = True
         user = User()
-        user.name = 'Me'
-        user.surname = 'You'
+        user.name = 'Egor'
+        user.surname = 'Martynenko'
         session.add(user)
         job.team_leader = user
+        session.add(job)
+        jobs = session.query(Jobs).all()
     return render_template('jobs_monitor.html', jobs=jobs)
 
 

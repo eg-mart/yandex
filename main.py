@@ -1,4 +1,6 @@
-from forms import LoginForm, RegisterForm
+from forms.login import LoginForm
+from forms.register import RegisterForm
+from forms.add_job import JobForm
 from flask import Flask, redirect, render_template
 from Jobs import Jobs
 from User import User
@@ -26,6 +28,33 @@ def load_user(user_id):
 def logout():
     logout_user()
     return redirect("/")
+
+
+@app.route('/add-job', methods=['GET', 'POST'])
+@login_required
+def add_job():
+    form = JobForm()
+    session = create_session()
+    with session.begin():
+        users = session.query(User).all()
+        choices = [(str(user.id), f'{user.name} {user.surname}') for user in users]
+        form.team_leader_id.choices = choices
+        form.collaborators.choices = choices
+
+    if form.validate_on_submit():
+        collaborators = ', '.join(form.collaborators.data)
+        session = create_session()
+        with session.begin():
+            job = Jobs(
+                job=form.job.data,
+                team_leader_id=form.team_leader_id.data,
+                collaborators=collaborators,
+                work_size=form.work_size.data,
+                is_finished=form.is_finished.data
+            )
+            session.add(job)
+        return redirect('/')
+    return render_template('add_job.html', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])

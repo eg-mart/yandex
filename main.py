@@ -3,7 +3,7 @@ from flask import Flask, redirect, render_template
 from Jobs import Jobs
 from User import User
 from db_session import create_session
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, login_required, logout_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -16,7 +16,16 @@ login_manager.init_app(app)
 def load_user(user_id):
     session = create_session()
     with session.begin():
-        return session.query(User).get(user_id)
+        user = session.query(User).get(user_id)
+        session.expunge(user)
+    return user
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -72,7 +81,7 @@ def register():
     return render_template('register.html', form=form)
 
 
-@app.route('/jobs-table')
+@app.route('/')
 def job_monitor():
     session = create_session()
     with session.begin():
